@@ -1,14 +1,11 @@
-package com.richa.ecommerce.order.dto;
+package com.richa.ecommerce.inventory.dto;
 
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Data
 public class OrderRequestDto {
-    private Long id;
     private List<OrderRequestItemDto> items;
-    private BigDecimal totalPrice;
 }
 

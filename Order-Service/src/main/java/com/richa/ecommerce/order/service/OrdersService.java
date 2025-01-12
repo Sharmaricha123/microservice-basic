@@ -2,7 +2,10 @@ package com.richa.ecommerce.order.service;
 
 
 
+import com.richa.ecommerce.order.clients.InventoryOpenFeignClient;
 import com.richa.ecommerce.order.dto.OrderRequestDto;
+import com.richa.ecommerce.order.entity.OrderItem;
+import com.richa.ecommerce.order.entity.OrderStatus;
 import com.richa.ecommerce.order.entity.Orders;
 import com.richa.ecommerce.order.repository.OrdersRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,8 @@ public class OrdersService {
 
     private final OrdersRepository orderRepository;
     private final ModelMapper modelMapper;
+    private final InventoryOpenFeignClient inventoryOpenFeignClient;
+
 
 
     public List<OrderRequestDto> getAllOrders() {
@@ -33,12 +38,20 @@ public class OrdersService {
         return modelMapper.map(order, OrderRequestDto.class);
     }
 
+    public OrderRequestDto createOrder(OrderRequestDto orderRequestDto) {
+        log.info("Calling the createOrder method");
+        Double totalPrice = inventoryOpenFeignClient.reduceStocks(orderRequestDto);
 
+        Orders orders = modelMapper.map(orderRequestDto, Orders.class);
+        for(OrderItem orderItem: orders.getItems()) {
+            orderItem.setOrder(orders);
+        }
+        orders.setTotalPrice(totalPrice);
+        orders.setOrderStatus(OrderStatus.CONFIRMED);
 
+        Orders savedOrder = orderRepository.save(orders);
 
-    public OrderRequestDto createOrderFallback(OrderRequestDto orderRequestDto,Throwable throwable) {
-        log.error("Fallback occurred due to : {}",throwable.getMessage());
-        return  new OrderRequestDto();
+        return modelMapper.map(savedOrder, OrderRequestDto.class);
     }
 
 }

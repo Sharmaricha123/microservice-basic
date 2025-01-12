@@ -1,10 +1,9 @@
-package com.richa.ecommerce.order.dto;
+package com.richa.ecommerce.inventory.dto;
 
 import lombok.Data;
 
 @Data
 public class OrderRequestItemDto {
-    private Long id;
     private Long productId;
     private Integer quantity;
 }

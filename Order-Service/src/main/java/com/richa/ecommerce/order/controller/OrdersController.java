@@ -2,6 +2,7 @@ package com.richa.ecommerce.order.controller;
 
 
 
+import com.richa.ecommerce.order.clients.InventoryOpenFeignClient;
 import com.richa.ecommerce.order.dto.OrderRequestDto;
 import com.richa.ecommerce.order.service.OrdersService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,6 +20,13 @@ import java.util.List;
 public class OrdersController {
 
     private final OrdersService orderService;
+
+    @PostMapping("/create-order")
+    public ResponseEntity<OrderRequestDto> createOrder(@RequestBody OrderRequestDto orderRequestDto) {
+        OrderRequestDto orderRequestDto1 = orderService.createOrder(orderRequestDto);
+        return ResponseEntity.ok(orderRequestDto1);
+    }
+
 
     @GetMapping("/helloOrders")
     public String helloOrders(){
