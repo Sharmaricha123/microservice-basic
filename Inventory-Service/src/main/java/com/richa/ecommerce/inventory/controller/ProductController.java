@@ -3,6 +3,7 @@ package com.richa.ecommerce.inventory.controller;
 
 import com.richa.ecommerce.inventory.dto.ProductDto;
 import com.richa.ecommerce.inventory.service.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.ServiceInstance;
@@ -25,11 +26,12 @@ public class ProductController {
 
 
     @GetMapping("/fetchOrders")
-    public String fetchFromOrderService(){
-        ServiceInstance orderService=discoveryClient.getInstances("Order-Service").getFirst();
+    public String fetchFromOrderService(HttpServletRequest httpServletRequest){
+        log.info(httpServletRequest.getHeader("x-custom-header"));
+        ServiceInstance orderService=discoveryClient.getInstances("ORDER-SERVICE").getFirst();
 
        return restClient.get()
-                .uri(orderService.getUri()+"/api/v1/orders/helloOrders")
+                .uri(orderService.getUri()+"/orders/core/helloOrders")
                 .retrieve()
                 .body(String.class);
     }
