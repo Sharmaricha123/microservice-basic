@@ -29,8 +29,8 @@ public class OrdersController {
 
 
     @GetMapping("/helloOrders")
-    public String helloOrders(){
-        return "Hello from Orders Service";
+    public String helloOrders(@RequestHeader("X-User-Id") Long userId){
+        return "Hello from Orders Service,user id is :"+userId;
     }
 
     @GetMapping
